@@ -1,0 +1,221 @@
+{
+    "modules": [
+        {
+            "id": "507a69ca-7be8-457f-b577-2f1818ee61b3",
+            "type": "SetQueue",
+            "branches": [
+                {
+                    "condition": "Success",
+                    "transition": "b3cf456c-d172-4624-97d0-8c734062433b"
+                },
+                {
+                    "condition": "Error",
+                    "transition": "5069e2b3-239a-463f-aaa5-b2bf6637196d"
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "Queue",
+                    "value": "arn:aws:connect:YOURREGION:YOURACCOUNTID:instance/YOURINSTANCEID/queue/YOURQUEUEID",
+                    "namespace": null,
+                    "resourceName": "CallBackQueue"
+                }
+            ],
+            "metadata": {
+                "position": {
+                    "x": 193,
+                    "y": 50
+                },
+                "useDynamic": false,
+                "queue": {
+                    "id": "arn:aws:connect:YOURREGION:YOURACCOUNTID:instance/YOURINSTANCEID/queue/YOURQUEUEID",
+                    "text": "CallBackQueue"
+                }
+            }
+        },
+        {
+            "id": "c7d1b9d2-a613-4041-9d3a-42ecea67e38d",
+            "type": "PlayPrompt",
+            "branches": [
+                {
+                    "condition": "Success",
+                    "transition": "b3cf456c-d172-4624-97d0-8c734062433b"
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "Text",
+                    "value": "callbacknumber",
+                    "namespace": "User Defined"
+                },
+                {
+                    "name": "TextToSpeechType",
+                    "value": "text"
+                }
+            ],
+            "metadata": {
+                "position": {
+                    "x": 492,
+                    "y": 260
+                },
+                "useDynamic": true
+            }
+        },
+        {
+            "id": "b3cf456c-d172-4624-97d0-8c734062433b",
+            "type": "Loop",
+            "branches": [
+                {
+                    "condition": "Looping",
+                    "transition": "c7d1b9d2-a613-4041-9d3a-42ecea67e38d"
+                },
+                {
+                    "condition": "Complete",
+                    "transition": "4fefd2b7-6c36-4deb-8502-5f72fc59b9e3"
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "LoopCount",
+                    "value": "0"
+                }
+            ],
+            "metadata": {
+                "position": {
+                    "x": 675,
+                    "y": 13
+                },
+                "useDynamic": false
+            }
+        },
+        {
+            "id": "2b5b454b-2a67-42fd-a36c-7febe32663d8",
+            "type": "Disconnect",
+            "branches": [],
+            "parameters": [],
+            "metadata": {
+                "position": {
+                    "x": 1537,
+                    "y": 539
+                }
+            }
+        },
+        {
+            "id": "5069e2b3-239a-463f-aaa5-b2bf6637196d",
+            "type": "PlayPrompt",
+            "branches": [
+                {
+                    "condition": "Success",
+                    "transition": "2b5b454b-2a67-42fd-a36c-7febe32663d8"
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "AudioPrompt",
+                    "value": "arn:aws:connect:YOURREGION:YOURACCOUNTID:instance/YOURINSTANCEID/prompt/6b5b3f83-4855-45a2-b6e2-115ac5b906c9",
+                    "namespace": null,
+                    "resourceName": "Behold"
+                }
+            ],
+            "metadata": {
+                "position": {
+                    "x": 465,
+                    "y": 491
+                },
+                "useDynamic": false,
+                "promptName": "Behold"
+            }
+        },
+        {
+            "id": "4fefd2b7-6c36-4deb-8502-5f72fc59b9e3",
+            "type": "SetCallBackNumber",
+            "branches": [
+                {
+                    "condition": "Success",
+                    "transition": "ee4cbbcd-ce45-4f63-94a4-3e21a31da856"
+                },
+                {
+                    "condition": "InvalidPhoneNumber",
+                    "transition": "5069e2b3-239a-463f-aaa5-b2bf6637196d"
+                },
+                {
+                    "condition": "NonDialableNumber",
+                    "transition": "5069e2b3-239a-463f-aaa5-b2bf6637196d"
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "CallBackNumber",
+                    "value": "callbacknumber",
+                    "namespace": "User Defined"
+                }
+            ],
+            "metadata": {
+                "position": {
+                    "x": 982,
+                    "y": 80
+                }
+            }
+        },
+        {
+            "id": "ee4cbbcd-ce45-4f63-94a4-3e21a31da856",
+            "type": "CreateCallback",
+            "branches": [
+                {
+                    "condition": "Success",
+                    "transition": "2b5b454b-2a67-42fd-a36c-7febe32663d8"
+                },
+                {
+                    "condition": "Error",
+                    "transition": "5069e2b3-239a-463f-aaa5-b2bf6637196d"
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "Queue",
+                    "value": "arn:aws:connect:YOURREGION:YOURACCOUNTID:instance/YOURINSTANCEID/queue/YOURQUEUEID",
+                    "namespace": null,
+                    "resourceName": "CallBackQueue"
+                },
+                {
+                    "name": "InitialDelaySeconds",
+                    "value": 10
+                },
+                {
+                    "name": "RetryDelaySeconds",
+                    "value": 60
+                },
+                {
+                    "name": "MaxRetryAttempts",
+                    "value": 2
+                }
+            ],
+            "metadata": {
+                "position": {
+                    "x": 1277,
+                    "y": 136
+                },
+                "useDynamic": false,
+                "queue": {
+                    "id": "arn:aws:connect:YOURREGION:YOURACCOUNTID:instance/YOURINSTANCEID/queue/YOURQUEUEID",
+                    "text": "CallBackQueue"
+                }
+            }
+        }
+    ],
+    "version": "1",
+    "type": "contactFlow",
+    "start": "507a69ca-7be8-457f-b577-2f1818ee61b3",
+    "metadata": {
+        "entryPointPosition": {
+            "x": 36,
+            "y": 33
+        },
+        "snapToGrid": false,
+        "name": "Programmatic Callback",
+        "description": null,
+        "type": "contactFlow",
+        "status": "published",
+        "hash": "aedd217901ab44aa93d1d1d2ee75a1fbd907338be7c9c858e0393ea98b4abe43"
+    }
+}

@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: Pinpoint-Connect Callback AWS Lambda function.
+Resources:
+  PinpointConnectCallbackFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: app.handler
+      Runtime: nodejs8.10
+      CodeUri: src/
+      Description: Pinpoint-Connect Callback AWS Lambda function.
+      MemorySize: 128
+      Timeout: 10
+      Role: !GetAtt PinpointConnectCallbackFunctionIamRole.Arn
+      Events:
+        SNS1:
+          Type: SNS
+          Properties:
+            Topic:
+              Ref: SNSTopic1
+      Environment:
+        Variables:
+          ConnectContactFlowId: YOURCALLBACKFLOWID
+          ConnectInstanceId: YOURINSTANCEID
+          ConnectQueueId: YOURQUEUEID
+          FakeNumber: 'YOURCALLBACKFLOWPHONENUMBER'
+          Keyword: YOURKEYWORD
+          PinpointApplicationId: YOURPINPOINTPROJECTID
+  SNSTopic1:
+    Type: 'AWS::SNS::Topic'
+
+  PinpointConnectCallbackFunctionIamRole: 
+    Type: AWS::IAM::Role
+    Properties: 
+      RoleName: PinpointConnectCallbackFunctionRole
+      AssumeRolePolicyDocument: 
+        Version: '2012-10-17'
+        Statement: 
+        - Effect: Allow
+          Principal: 
+            Service: lambda.amazonaws.com
+          Action: 
+          - sts:AssumeRole
+      Path: '/'
+      Policies: 
+      - PolicyName: Logs
+        PolicyDocument: 
+          Statement: 
+          - Effect: Allow
+            Action: 
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource: arn:aws:logs:*:*:*
+      - PolicyName: Pinpoint
+        PolicyDocument: 
+          Statement: 
+          - Effect: Allow
+            Action: 
+            - mobiletargeting:SendMessages
+            - mobiletargeting:PhoneNumberValidate
+            Resource: arn:aws:mobiletargeting:YOURREGION:YOURACCOUNTID:apps/YOURPROJECTORAPPID/endpoints/*
+      - PolicyName: Connect
+        PolicyDocument: 
+          Statement: 
+          - Effect: Allow
+            Action: 
+            - connect:StartOutboundVoiceContact
+            Resource: arn:aws:connect:YOURREGION:YOURACCOUNTID:instance/YOURINSTANCEID/contact/*
+            
+            
+#Outputs:
+
+    PinpointConnectCallbackFunction:
+      Description: "Lambda function to trigger calls"
+      Value: !GetAtt PinpointConnectCallbackFunction.Arn
+
+    PinpointConnectCallbackFunctionIamRole:
+      Description: "IAM Role created for this function"
+      Value: !GetAtt PinpointConnectCallbackFunctionIamRole.Arn

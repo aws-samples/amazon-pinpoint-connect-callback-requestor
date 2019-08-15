@@ -1,0 +1,42 @@
+      {
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "Logs",
+              "Effect": "Allow",
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:CreateLogGroup",
+                "logs:PutLogEvents"
+              ],
+              "Resource": [
+                "arn:aws:logs:*:*:*"
+              ]
+            },
+            {
+              "Sid": "Pinpoint",
+              "Effect": "Allow",
+              "Action": [
+                "mobiletargeting:SendMessages",
+                "mobiletargeting:PhoneNumberValidate"
+              ],
+              "Resource": [
+                "arn:aws:mobiletargeting:YOURREGION:YOURACCOUNTID:apps/YOURPROJECTORAPPID/endpoints/*"
+              ]
+            },
+            {
+              "Sid": "Connect",
+              "Effect": "Allow",
+              "Action": [
+                "connect:StartOutboundVoiceContact"
+              ],
+              "Resource": [
+                "arn:aws:connect:YOURREGION:YOURACCOUNTID:instance/YOURINSTANCEID/contact/*"
+              ]
+            }
+          ]
+        },
+        "name": "PinpointCallBack",
+        "type": "managed"
+      }

@@ -1,0 +1,15 @@
+{
+  "name": "amazon-pinpoint-connect-callback-requestor",
+  "version": "1.0.0",
+  "description": "Use Pinpoint, Lambda and Connect to put customers into phone callback queue upon an SMS request from them.",
+  "main": "src/app.js",
+  "repository": "https://github.com/aws-samples/amazon-pinpoint-connect-callback-requestor",
+  "author": "Ilya Pupko",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "aws-sdk": "^2.510.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.1.0"
+  }
+}
