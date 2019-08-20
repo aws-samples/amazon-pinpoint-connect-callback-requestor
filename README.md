@@ -1,5 +1,5 @@
 ## Amazon Pinpoint Call Generator
-Use Amazon Web Services (AWS) Pinpoint, Lambda and Connect to transparenty put customers into a phone callback queue upon an SMS request from them.
+Use Amazon Web Services (AWS) Pinpoint, Lambda and Connect to transparently put customers into a phone callback queue upon an SMS request from them.
 
 ## License Summary
 This sample code and flow is made available under Open Source - MIT No Attribution License (MIT-0). See the [LICENSE](/LICENSE) file.
@@ -11,7 +11,7 @@ Major benefits:
 1. Customer does not wait on the line (nor consumes the line)
 2. Customer is put immediately into the queue (following the standard FIFO)
 3. Customer gets immediate confirmation that they have been put into the queue
-4. All of the flows are asyncroneous/independent of each other
+4. All of the flows are asynchronous/independent of each other
 5. Limited only by the configured Callback queue (no intrinsic volume limit)
 6. Provides for full native visibility (including wait-times)
 
@@ -41,8 +41,8 @@ Main files:
 #### Step 1: Pinpoint
 Create the new Pinpoint project or identify one you want to reuse along with the long-code. 
 Setup two-way SMS. Take note of the SNS topic (new or existing). 
-If this number will be used for outgoing notifications, make sure you handle unsibscribe (aka STOP) requests.
-Optionally add a tempory email subscription to the SNS topic to passively and proactively monitor it during debugging.
+If this number will be used for outgoing notifications, make sure you handle unsubscribe (aka STOP) requests.
+Optionally add a temporary email subscription to the SNS topic to passively and proactively monitor it during debugging.
 Send SMS through and confirm SNS event occurs.
 #### Step 2: Connect
 Create the new Connect instance or identify the one you want to reuse along with the phone number(s). 
