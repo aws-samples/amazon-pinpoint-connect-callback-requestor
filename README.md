@@ -1,4 +1,4 @@
-## Amazon Pinpoint Call Generator
+## Amazon Pinpoint Connect Callback Requestor
 Use Amazon Web Services (AWS) Pinpoint, Lambda and Connect to transparently put customers into a phone callback queue upon an SMS request from them.
 
 ## License Summary
