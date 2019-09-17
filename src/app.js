@@ -40,7 +40,7 @@ exports.handler = (event, context) => {
     * - Keyword is the filter keyword you want the customers to send via SMS to trigger the flow. 
     *       Alternatively you can filter via SNS subscription setting itself (loose visibility but minimize costs).
     * - FakeNumber is the number you want to be dialed for the handover. You can use your main Connect line or
-    *       setup an indepedent temporary number that does not do any actual agent hand-over.
+    *       setup an independent temporary number that does not do any actual agent hand-over.
     */
     console.log('Received event: ' + event.Records[0].Sns.Message);
     var timestamp = event.Records[0].Sns.Timestamp;
