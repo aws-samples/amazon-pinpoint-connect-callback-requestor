@@ -75,7 +75,9 @@ Note the main portions of the flow above is:
 3. Associate Lambda with SNS.  
 4. Save.  
 5. Configure a new Lambda Test event - use included eventData.json for the sample payload, but remember to change the phone number.
+
 <img align="right" src="misc/phone.png" alt="Preview outcome" />
+
 #### Step 5: Run and Confirm
 1. Run test and confirm your event produces the SMS back to the number you specified or check console for errors.  
 2. Send a manual SMS to your Pinpoint number and confirm your event goes through SNS and you receive another response via SMS.  
