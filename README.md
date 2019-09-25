@@ -1,11 +1,7 @@
 ## Amazon Pinpoint Connect Callback Requestor
 Use Amazon Web Services (AWS) Pinpoint, Lambda and Connect to transparently put customers into a phone callback queue upon an SMS request from them.
 
-## License Summary
-This sample code and flow is made available under Open Source - MIT No Attribution License (MIT-0). See the [LICENSE](/LICENSE) file.
-
-### Architecture
-Upon an SMS request from the user, AWS Pinpoint publishes to AWS SNS queue. A custom AWS Lambda function detects a new event, confirms configured keyword was part of the request and commands AWS Connect to issue a Call-out to another AWS Connect number (i.e. behind the scenes) and a custom AWS Connect Flow at that point configures the Callback queue and the Callback phone number to use. As all of this occurs behind the scenes, user remains unaware of the details and does not have to remain on the line - they receive a call once the next available Agent is already on the line.
+One of the most frustrating experiences of using live customer service is having wait on the line for an agent to become available, listening to pre-recorded messages and music for a long period of time. With this approach, your users can instead simply ask for an agent to call them and the system will automatically initiate the call once the next agent becomes available.
 
 Major benefits:
 1. Customer does not wait on the line (nor consumes the line)
@@ -14,6 +10,15 @@ Major benefits:
 4. All of the flows are asynchronous/independent of each other
 5. Limited only by the configured Callback queue (no intrinsic volume limit)
 6. Provides for full native visibility (including wait-times)
+
+Note, this same logic/code can be reused for other similar flows, like a button on your website or your mobile app.
+
+## License Summary
+This sample code and flow is made available under Open Source - MIT No Attribution License (MIT-0). See the [LICENSE](/LICENSE) file.
+
+### Architecture
+The flow itself is very simple - user sends SMS with a predefined keyword (e.g. "assist"), gets a response confirming that they have been put into the queue, and later on gets the call, once the contact center agent does become available. 
+On the implementation side, upon an SMS request from the user, AWS Pinpoint publishes to AWS SNS queue. A custom AWS Lambda function gets triggered on this new event, confirms configured keyword was part of the request,ß and commands AWS Connect to issue a Call-out to another AWS Connect number (behind the scenes, aka fake) and a custom AWS Connect Flow at that point configures the proper Callback queue and the Callback phone number of the user to use. As all of this occurs behind the scenes, user remains unaware of the details and does not have to remain on the line (nor listen to the music) - they receive a call once the next available Agent is already on the line.
 
 ![Architecture Diagram](misc/architecture.png?raw=true)
 
@@ -39,17 +44,17 @@ Main files:
 
 ### Setup
 #### Step 1: Pinpoint
-Create the new Pinpoint project or identify one you want to reuse along with the long-code.   
-Setup two-way SMS by clicking on the long-code (aka phone number) of choice under the "SMS and voice" Settings and enabling the 2-way with the SNS topic defined. Take note of the SNS topic (new or existing).   
+Create the new Pinpoint project and request a new long-code (the phone number through which all of the interactions will take place). See [steps 1.1 and 1.2 of this tutorial](https://docs.aws.amazon.com/pinpoint/latest/developerguide/tutorials-two-way-sms-part-1.html). Alternatively, you can simply reuse an existing project and phone number (aka long- or short-code).  
+Enable two-way SMS by clicking on the long-code of choice under the "SMS and voice" Settings and enabling the 2-way with the SNS topic defined. See [step 1.3 of the same tutorial](https://docs.aws.amazon.com/pinpoint/latest/developerguide/tutorials-two-way-sms-part-1.html). Take note of this SNS topic (new or existing).    
 If this number will be used for outgoing notifications, make sure you handle unsubscribe (aka STOP) requests.  
 Optionally add a temporary email subscription to the SNS topic to passively and proactively monitor it during debugging.  
 Send SMS through and confirm SNS event occurs.
 #### Step 2: Connect
 Create the new Connect instance or identify the one you want to reuse along with the phone number(s). 
 Optionally setup new basic Connect queue for Callback and another one for Callback routing if you want to use a separate number for that.  
-Create new flow to push new callback requests. Use [src/connectFlow.json](src/connectFlow.json) as a reference, if/as needed:  
+Create new flow to push new callback requests. Feel free to use [src/connectFlow.json](src/connectFlow.json) as a reference (but take note to replace the Account ID, Region, etc. to the appropriate ones from your own account). The general flow should look along the lines of the following:  
 ![Connect Callback flow Diagram](misc/ConnectCallBackFlow.png?raw=true)
-Note the main portions of the flow is:
+Note the main portions of the flow above is:
 1. The _Set callback number_ set to "callbacknumber" attribute (no quotes):  
 ![Screenshot of callback box](misc/ConnectCallBackBox.png?raw=true)
 2. And following it _Transfer to queue_ set to _Transfer to callback queue_ with the appropriate queue selected:  
@@ -70,6 +75,7 @@ Set Environment variables - these are dynamic configuration parameters that you 
 Associate Lambda with SNS.  
 Save.  
 Configure a new Lambda Test event - use included eventData.json for the sample payload, but remember to change the phone number.
+<img align="right" src="misc/phone.png" alt="Preview outcome" />
 #### Step 5: Run and Confirm
 Run test and confirm your event produces the SMS back to the number you specified or check console for errors.  
 Send a manual SMS to your Pinpoint number and confirm your event goes through SNS and you receive another response via SMS.  
